@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace HelloWorld
@@ -54,12 +55,57 @@ namespace HelloWorld
             Console.WriteLine("\nThe Figure attacks you");
             _gameOver = Combat(ref _playerHealth, ref _figureHealth);
         }
-        void EnterRoom(string R)
+        void EnterRoom( int aisleNumber)
         {
-            Console.WriteLine("You are in " + R);
-            char input = ' ';
-            input = GetInput("Go forward", "Go back", "Which direction would you like to go?");
+            string exitMessage = "";
+            switch (aisleNumber)
+            {
+                case 0:
+                    {
+                        exitMessage = "You turn around and return to the previous aisle";
+                        Console.WriteLine("You're at the start of a new series of aisles");
+                        break;
+                    }
+                case 1:
+                    {
+                        exitMessage = "You exit the canned-goods aisle";
+                        Console.WriteLine("You walk forward and find yourself in the canned-goods aisle. Canned meats, vegetables, fruits and more sit well stocked on the shelves.");
+                        break;
+                    }
+                case 2:
+                    {
+                        exitMessage = "You return to the canned-goods aisle";
+                        Console.WriteLine("You walk forward once more and find yourself in the candy aisle");
+                        break;
+                    }
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                    {
+                        exitMessage = "You return to the candy aisle";
+                        Console.WriteLine("You continue on walking through a awdwd7mv number of aisles");
+                        break;
+                    }
+                case 8:
+                    {
+                        Console.WriteLine("\nAfter wandering for an unknown amount of hours you see a masked Figure blocking your path");
+                        Console.WriteLine("He begins to approach you brandishing a kitchen knife");
+                        Combat(ref _playerHealth, ref _figureHealth);
 
+                        break;
+                    }
+            }
+            Console.WriteLine("You are in Aisle: " + aisleNumber);
+            char input = ' ';
+            input = GetInput("Go Forward", "Go Back", "Where are you going?");
+            if (input == '1')
+            {
+                EnterRoom(aisleNumber + 1);
+            }
+
+            Console.WriteLine(exitMessage);
         }
 
         bool Combat(ref float playerHealth, ref float figureHealth)
@@ -154,8 +200,7 @@ namespace HelloWorld
         //Used for all game logic that will repeat
         public void Update()
         {
-            RequestName(ref _playerName);
-            Explore();
+            EnterRoom(0);
         }
 
         //Performed once when the game ends
