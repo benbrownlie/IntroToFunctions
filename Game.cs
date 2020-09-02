@@ -6,28 +6,27 @@ namespace HelloWorld
 {
     class Game
     {
+        //Default Player and Figure stats
+        float _playerHealth = 100.0f;
+        int _playerDamage = 10;
+        float _figureHealth = 50.0f;
+        int _figureDamage = 10;
+        //
         bool _gameOver = false;
-        string _playerName = "";
-        void RequestName()
+        string _playerName = "the employee";
+        void RequestName(ref string name)
         {
-            //If player already has a name, return from function
-            if(_playerName != "")
-            {
-                return;
-            }
             char input = ' ';
             //Loop until valid input is given
             while (input != '1')
             {
                 //Clear previous text
-                
+
                 //Ask user for name
-                Console.WriteLine("Enter your name");
-                _playerName = Console.ReadLine();
-                //Display username
-                Console.WriteLine("Welcome " + _playerName + " ");
+                Console.WriteLine("Enter a new name for " + _playerName);
+                name = Console.ReadLine();
                 //Give the user the option to change their name
-                input = GetInput("Yes", "No", "Are you sure that's your name " + _playerName + "?");
+                input = GetInput("Yes", "No", "Are you sure that's your name " + name + "?");
                 //Displays disappointed message over player's poor choice of name
                 if (input == '2')
                 {
@@ -40,52 +39,65 @@ namespace HelloWorld
         {
             char input = ' ';
             input = GetInput("Go left", "Go right", "You came to an intersection in the aisles");
-            if(input == '1')
+            if (input == '1')
             {
                 Console.WriteLine("You decide to go left. You are greeted by the Figure");
-                _gameOver = true;
             }
-            else if(input == '2')
+            else if (input == '2')
             {
                 Console.WriteLine("You walk down the aisle safely");
                 Console.WriteLine("\nYou make it to a clearing in the aisles," +
                " shelves stocked with inventory surround the area");
-                Console.WriteLine("On display infront of you is: A set of cutlery and a splitting axe");
+                Console.WriteLine("Ahead of you is an exit, you run for it");
+                Console.WriteLine("The sliding doors open to reveal the Figure is blocking your path");
             }
-           
+            Console.WriteLine("\nThe Figure attacks you");
+            _gameOver = Combat(ref _playerHealth, ref _figureHealth);
         }
-        void Combat()
+        void EnterRoom(string R)
         {
-            //Used to store the player's stats
-            float playerHealth = 50.0f;
-            int playerDamage = 5;
-            //Used to store the Figure's stats
-            float figureHealth = 100.0f;
-            int figureDamage = 10;
-            //Used to store combat loop
+            Console.WriteLine("You are in " + R);
             char input = ' ';
-            input = GetInput("Fight", "Defend", "Run");
-            if(input == '1')
+            input = GetInput("Go forward", "Go back", "Which direction would you like to go?");
+
+        }
+
+        bool Combat(ref float playerHealth, ref float figureHealth)
+        {
+            //initialize the input variable
+            char input = ' ';
+            //Create battle loop. Loops until enemy or player is dead
+            while (playerHealth > 0 && figureHealth > 0)
             {
-                Console.WriteLine("\nYou swing at the Figure");
-                figureHealth -= playerDamage;
-                playerHealth -= figureDamage;
-                Console.WriteLine("You dealt " + playerDamage + "");
-                Console.WriteLine("You took " + figureDamage + "");
+                //Get input from player
+                input = GetInput("Attack", "Defend", "Run");
+                //Attack option. Deals and takes damage.
+                if (input == '1')
+                {
+                    figureHealth -= _playerDamage;
+                    Console.WriteLine("You attacked and dealt 10 damage");
+                }
+                //Defend option. Takes no damage and deals no damage.
+                else if (input == '2')
+                {
+                    Console.WriteLine("You blocked the figure's attack");
+                    Console.ReadKey();
+                    continue;
+                }
+                playerHealth -= _figureDamage;
+                Console.WriteLine("The figure attacked and dealt " + _figureDamage + "");
+                Console.ReadKey();
             }
-            else if(input == '2')
-            {
-                Console.WriteLine("\nYou raise your arms to block the incoming attack");
-                playerHealth -= figureDamage - 10;
-                Console.WriteLine("You blocked the attack and took 0 damage");
-            }
-            
+            return playerHealth <= 0;
         }
 
         void ViewStats()
         {
             //Prints player stats to the screen
-            Console.WriteLine(_playerName);
+            Console.WriteLine("Employee ID");
+            Console.WriteLine("Name: " + _playerName + "");
+            Console.WriteLine("Health: " + _playerHealth + "");
+            Console.WriteLine("Damage: " + _playerDamage + "");
             Console.WriteLine("\nPress any key to continue");
             Console.Write("> ");
             Console.ReadKey();
@@ -108,7 +120,7 @@ namespace HelloWorld
                 input = Console.ReadKey().KeyChar;
                 Console.WriteLine();
                 //If the player input 3, call the view stats function
-                if(input == '3')
+                if (input == '3')
                 {
                     ViewStats();
                 }
@@ -135,16 +147,15 @@ namespace HelloWorld
         public void Start()
         {
             Console.WriteLine("Welcome to YOUR shift!");
-            
+
         }
 
         //Repeated until the game ends
         //Used for all game logic that will repeat
         public void Update()
         {
-            RequestName();
+            RequestName(ref _playerName);
             Explore();
-            Combat();
         }
 
         //Performed once when the game ends
